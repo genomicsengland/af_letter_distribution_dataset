@@ -63,9 +63,8 @@ read_in_xlsx <- function(f) {
 
 p <- run_query(dbs_con, "./sql_scripts/participant_data_from_dbs.sql")
 
-# bring in form_type
-ft <- run_query(indx_con, "./sql_scripts/form_type.sql")
-p <- merge(p, ft, by = "participant_id", all.x = TRUE)
+# read in NT cohort
+nt <- read_in_xlsx('/Users/simonthompson/Downloads/210525 NT AF Batch 1 v6.xlsx')$Participant.ID
 
 # get each of the different list of PIDS to exclude
 p$excl_withdrawals <- p$participant_id %in% run_exclude_query(pmi_con,
@@ -76,15 +75,26 @@ p$excl_cohorts <- p$participant_id %in% run_exclude_query(mis_con,
                             "./sql_scripts/excl_cohort_members.sql")
 p$excl_epilepsy <- p$participant_id %in% run_exclude_query(mis_con,
                             "./sql_scripts/excl_epilepsy_cohort.sql")
-p$excl_scottish <- p$participant_id %in% run_exclude_query(mis_con,
-                            "./sql_scripts/excl_scottish.sql")
-p$excl_adult_on_child <- p$age >= 18 & grepl("c5|r5", p$form_type)
-
-# exclude NT cohort
+p$excl_devolved <- p$participant_id %in% run_exclude_query(mis_con,
+                            "./sql_scripts/excl_devolved.sql")
+p$excl_nt_cohort <- p$participant_id %in% nt
+p$excl_blacklisted <- p$participant_id %in% run_exclude_query(pmi_con,
+                            "./sql_scripts/excl_blacklist_participants.sql")
 
 # aggregate the excludes
 p$exclude <- apply(p[, grepl("^excl_", names(p))], 1, any)
 stopifnot(all(!is.na(p$exclude)))
+
+# have duplicate people in the dataset, decide that if a person is excluded
+# for any of the reasons above then both of their participant IDs should
+# be excluded
+duplicates_to_exclude <- p %>% group_by(nhs_number) %>%
+    filter(n() > 1) %>%
+    summarise(exclude_dupl = any(exclude))
+
+p$exclude[p$nhs_number %in%
+            duplicates_to_exclude$nhs_number[
+                duplicates_to_exclude$exclude_dupl]] <- TRUE
 
 # establish the participant IDs which are valid from Tim's line-by-line
 lbl <- read_in_xlsx("/Users/simonthompson/scratch/210429 AF Database v1.xlsx")
@@ -102,9 +112,27 @@ stopifnot(all(!is.na(p$send_letter)))
 # save dataset
 saveRDS(p, "p.rds")
 
-#TODO: need to add step here to remove duplicate NHS numbers
-# hceck this
-# p <- p[!duplicated(p$nhs_number), ]
-
-
-
+# prepare final set of data
+p$full_name <- paste(p$forename, p$surname)
+exp <- unique(dropnrename(p[p$send_letter, ],
+                          c("full_name",
+                            "address_1",
+                            "address_2",
+                            "address_3",
+                            "address_4",
+                            "address_5",
+                            "postcode",
+                            "forename",
+                            "participant_id"),
+                          c("full name",
+                            "add_1",
+                            "add_2",
+                            "add_3",
+                            "add_4",
+                            "add_5",
+                            "postcode",
+                            "first name",
+                            "participant id")
+                            )
+)
+write.table(exp, "~/scratch/af_letter_data.xls", sep = "\t", row.names = F)
