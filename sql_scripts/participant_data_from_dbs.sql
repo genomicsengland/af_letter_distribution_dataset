@@ -2,7 +2,6 @@
 select local_pid as participant_id
     ,trace_result_new_nhs_number as nhs_number
     ,returned_date_of_birth as dob
-    ,extract(year from age(now() + interval '1 month', returned_date_of_birth)) as age
     ,returned_first_forename as forename
     ,returned_surname as surname
     ,returned_address_line_1 as address_1

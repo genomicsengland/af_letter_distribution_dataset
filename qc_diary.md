@@ -22,6 +22,15 @@ Using `accessory_scripts/check_pilot_not_in_dbs.r` can see that all participant 
 
 Using `accessory_scripts/check_tim_line_by_line.r` establish that any duplicated rows for a participant have the same outcome status which is what is used to include participants.
 
-#TODO:
+## Deceased
 
-* participant ID prefixes which don't necessarily match to a GMC, are these excluded by cohorts?
+Using `accessory_scripts/check_deceased_form_types.r` see that there are a few participants who were recruited on deceased consent forms but have not come through as deceased from DBS. Elect to include the two participants where the form is undoubtedly linked to them, in a blacklist of participants who will be excluded from the mailout.
+
+## Absent addresses
+
+There are a number of participants returned from DBS who are eligible to receive the letter, however their address from DBS is not complete or otherwise corrupted. Elect to remove any individual who doesn't have a postcode from the final mailout, removes around 40 participants.
+
+## Withdrawals
+
+Using `accessory_scripts/check_withdrawals.r` can check whether all of the withdrawals in [Arjumand's tracker](https://genomicsenglandltd.sharepoint.com/:x:/r/teams/GE-ParticipationWithdrawalProcesses/Shared%20Documents/General/Withdrawals%20Action%20Tracker/100K%20Withdrawal%20Requests%20_%20Action%20Tracker.xlsx?d=w33bc9dfebcc443bbad489d05a1f16fe5&csf=1&web=1&e=S2oAmi) are being returned by the query run on PMI.
+All withdrawals in the tracker are in the PMI, but there are withdrawals in PMI not present in the tracker though these are either test participant_ids or non-100k ones.

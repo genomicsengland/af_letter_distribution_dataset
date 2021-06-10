@@ -1,22 +1,22 @@
 with cohorts as (
     select *
     from (values 
-('ALL (acutelymphoblastic leukaemia)', 'ALL', true),
+('Tracer X Lung', 'TRX', true),
 ('Breast Cancer Now', 'BCN', true),
 ('CLL ', 'CLL', true),
 ('MAJIC', 'MAJ', true),
-('NIHR350 (BioResource/BRIDGE)', 'NB3', true),
-('OCCAMS Oesophageal', 'EOC', true),
-('OxPloreD', 'TBC', false),
-('Partner Personalised Breast Cancer ', 'TBC', false),
-('PATHOS Oropharyngeal ', 'ORP', true),
-('PEACE (never submitted)', 'TBC', false),
 ('Phazar', 'PHA', true),
+('ALL (acutelymphoblastic leukaemia)', 'ALL', true),
 ('Rare Disease NEQAS ', 'NEQ', true),
-('Tessa Jowell BRAIN MATRIX ', 'TBC', false),
-('Tracer X Lung', 'TRX', true),
+('NIHR350 (BioResource/BRIDGE)', 'NB3', true),
+-- ('PEACE (never submitted)', 'TBC', false),
 ('Tracer x Renal', 'TRR', true),
-('TRACERx Melanoma', 'TRM', true)
+('TRACERx Melanoma', 'TRM', true),
+('OCCAMS Oesophageal', 'EOC', true),
+('PATHOS Oropharyngeal ', 'ORP', true)
+-- ('Tessa Jowell BRAIN MATRIX ', 'TBC', false),
+-- ('Partner Personalised Breast Cancer ', 'TBC', false),
+-- ('OxPloreD', 'TBC', false),
     ) as t (cohort_name, ods_code, exclude)
 )
 select p.participant_id
