@@ -34,3 +34,15 @@ There are a number of participants returned from DBS who are eligible to receive
 
 Using `accessory_scripts/check_withdrawals.r` can check whether all of the withdrawals in [Arjumand's tracker](https://genomicsenglandltd.sharepoint.com/:x:/r/teams/GE-ParticipationWithdrawalProcesses/Shared%20Documents/General/Withdrawals%20Action%20Tracker/100K%20Withdrawal%20Requests%20_%20Action%20Tracker.xlsx?d=w33bc9dfebcc443bbad489d05a1f16fe5&csf=1&web=1&e=S2oAmi) are being returned by the query run on PMI.
 All withdrawals in the tracker are in the PMI, but there are withdrawals in PMI not present in the tracker though these are either test participant_ids or non-100k ones.
+
+## DBS Matches
+
+Using `accessory_scripts/check_record_type_dbs.r` checked whether there are any participants who have been matched by DBS without the use of their NHS number i.e. using record_type 20, 40, 33:
+
+|response_code|nhs_number_supplied|trace_results|data_returned|
+|---|---|---|---|
+|20|N|Successful: Single exact match (Alphanumeric Trace) |Traced details |
+|40|Y|NHS number not valid but replacement traced and verified|Traced details and replacement NHS number|
+|33|Y|Successful: Failed cross check. Alphanumeric trace initiated. Single exact match|Traced details. May return a different NHS number|
+
+Gives 198 records, 166 of which are exact matches on full name and data of birth. From the remaining 32 records the vast majority had matching dates of birth but only slight changes to name (either extended surname or the addition of middles names). Only 3 participants had significantly different name or date of birth and were added `sql_scripts/excl_blacklist_participants.sql`.
