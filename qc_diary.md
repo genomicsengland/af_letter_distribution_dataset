@@ -24,7 +24,7 @@ Using `accessory_scripts/check_tim_line_by_line.r` establish that any duplicated
 
 ## Deceased
 
-Using `accessory_scripts/check_deceased_form_types.r` see that there are a few participants who were recruited on deceased consent forms but have not come through as deceased from DBS. Elect to include the two participants where the form is undoubtedly linked to them, in a blacklist of participants who will be excluded from the mailout.
+Using `accessory_scripts/check_deceased_form_types.r` see that there are a few participants who were recruited on deceased consent forms but have not come through as deceased from DBS. Elect to include these in a blacklist of participants who will be excluded from the mailout.
 
 ## Absent addresses
 
